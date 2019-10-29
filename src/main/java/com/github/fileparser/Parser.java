@@ -3,8 +3,8 @@ package main.java.com.github.fileparser;
 import main.java.com.github.fileparser.data.BlockComment;
 import main.java.com.github.fileparser.data.LineComment;
 import main.java.com.github.fileparser.data.ParseCommentResult;
+import main.java.com.github.fileparser.data.RegexComment;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,30 +12,8 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-    /*
-     *
-     */
+    public static ParseCommentResult parse(List<String> file, RegexComment regexComment) {
 
-    static String moreFun = " /* comment? doubt that */ String x = t;";
-    static List<Match> commentMatches = new ArrayList<Match>();
-
-    String evenMoreFun = " // comment? doubt that ";
-
-    static class Match {
-        int start;
-        String text;
-    }
-
-    public static ParseCommentResult parse(List<String> file) {
-        //Pattern commentsPattern = Pattern.compile("(//.*?$)|(/\\*.*?\\*/)|(\\*.*?$)");
-        //Pattern stringsPattern = Pattern.compile("(\".*?(?<!\\\\)\")");
-/*
-        Pattern endCommentPattern = Pattern.compile(CommentToken.REGEX_BLOCK_COMMENT_END_WITHOUT_TRAIL_CODE);
-        Pattern endCommentWithTrailingCodePattern = Pattern.compile(CommentToken.REGEX_BLOCK_COMMENT_END_WITH_TRAIL_CODE);
-        Pattern lineCommentPattern = Pattern.compile(CommentToken.REGEX_LINE_COMMENT);
-        Pattern lineTrailingCommentPattern = Pattern.compile(CommentToken.REGEX_LINE_COMMENT);
-        Pattern blockCommentStartPattern = Pattern.compile(CommentToken.REGEX_TRAILING_BLOCK_COMMENT_START);
-*/
         ParseCommentResult result = new ParseCommentResult();
         BlockComment blockComment = new BlockComment();
         int lineNumber = 0;
@@ -44,20 +22,19 @@ public class Parser {
             String comment;
             // Check if the line is inside block comment.
             if (!blockComment.isEmpty()) {
-                comment = findBlockCommentEnd(line);
+                comment = findBlockCommentEnd(line, regexComment.getBlockCommentEnd());
                 if (comment!=null) {
                     blockComment.addComment(new LineComment(comment,lineNumber));
                     result.addBlockComment(blockComment);
                     blockComment = new BlockComment();
                 } else {
                     blockComment.addComment(new LineComment(line,lineNumber));
-                }
-                //lineNumber++;
+                };
                 continue;
             }
 
             // Check if the line contains /* ...
-            comment = findBlockCommentStart(line);
+            comment = findBlockCommentStart(line, regexComment.getBlockCommentStart());
             if (comment != null) {
                 blockComment = new BlockComment();
                 blockComment.addComment(new LineComment(comment,lineNumber));
@@ -66,21 +43,15 @@ public class Parser {
                     result.addBlockComment(blockComment);
                     blockComment = new BlockComment();
                 }
-                //lineNumber++;
                 continue;
             }
 
-
-
-            // Check if the line has // or CODE //
-            comment = findLineComment(line);
+            // Check if the line has //
+            comment = findLineComment(line, regexComment.getSingleLineComment());
             if (comment != null) {
                 result.addLineComment(new LineComment(comment, lineNumber));
             }
-            //ineNumber++;
             //TODO: code
-
-
         }
         result.setTotalLineNum(lineNumber);
         return result;
@@ -92,23 +63,21 @@ public class Parser {
      * @return
      */
 
-    public static String findBlockCommentEnd(String line) {
+    public static String findBlockCommentEnd(String line, String regex) {
 
-        Pattern endCommentWithTrailingCodePattern = Pattern.compile("(([^\"//]*\"[^\"//]*\")*[^\"]*)(\\*\\/)(.*)");
+        //Pattern endCommentWithTrailingCodePattern = Pattern.compile("(([^\"//]*\"[^\"//]*\")*[^\"]*)(\\*\\/)(.*)");
+        Pattern endCommentWithTrailingCodePattern = Pattern.compile(regex);
         Matcher matcher = endCommentWithTrailingCodePattern.matcher(line);
         if (matcher.matches()) {
             // end of block comment
             String comment = matcher.group(1) + matcher.group(3);
             // reach */ block comment end.
             if (matcher.groupCount() >= 5 &&  matcher.group(4) != null) {
-                //code line ++
+                //TODO: code
             }
             return comment;
         }
-
-        // Block Comment Body
         return null;
-
     }
 
     /**
@@ -116,9 +85,10 @@ public class Parser {
      * @param line
      * @return
      */
-    public static String findBlockCommentStart(String line) {
+    public static String findBlockCommentStart(String line, String regex) {
 
-        Pattern blockCommentStartPattern = Pattern.compile("(([^\"//]*\"[^\"//]*\")*[^\"]*)(\\/\\*.*)");
+        //Pattern blockCommentStartPattern = Pattern.compile("(([^\"//]*\"[^\"//]*\")*[^\"]*)(\\/\\*.*)");
+        Pattern blockCommentStartPattern = Pattern.compile(regex);
         Matcher matcher = blockCommentStartPattern.matcher(line);
         if (matcher.matches()) {
             String comment = matcher.group(3);
@@ -130,8 +100,9 @@ public class Parser {
         return null;
     }
 
-    public static String findLineComment(String line) {
-        Pattern lineCommentPattern = Pattern.compile("(([^\"]*\"[^\"]*\")*[^\"]*)(//.*)");
+    public static String findLineComment(String line, String regex) {
+        //Pattern lineCommentPattern = Pattern.compile("(([^\"]*\"[^\"]*\")*[^\"]*)(//.*)");
+        Pattern lineCommentPattern = Pattern.compile(regex);
         Matcher matcher = lineCommentPattern.matcher(line);
         if (matcher.matches()) {
             String comment = matcher.group(3);
