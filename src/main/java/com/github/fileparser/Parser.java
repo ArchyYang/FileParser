@@ -51,15 +51,16 @@ public class Parser {
             if (comment != null) {
                 result.addLineComment(new LineComment(comment, lineNumber));
             }
-            //TODO: code
+            //TODO: line is source code.
         }
         result.setTotalLineNum(lineNumber);
         return result;
     }
 
     /**
-     *
+     * findBlockCommentEnd
      * @param line
+     * @param regex
      * @return
      */
 
@@ -73,7 +74,7 @@ public class Parser {
             String comment = matcher.group(1) + matcher.group(3);
             // reach */ block comment end.
             if (matcher.groupCount() >= 5 &&  matcher.group(4) != null) {
-                //TODO: code
+                // TODO: matcher.group(4) is a line of source code.
             }
             return comment;
         }
@@ -81,33 +82,38 @@ public class Parser {
     }
 
     /**
-     *
+     * findBlockCommentStart
      * @param line
+     * @param regex
      * @return
      */
     public static String findBlockCommentStart(String line, String regex) {
 
-        //Pattern blockCommentStartPattern = Pattern.compile("(([^\"//]*\"[^\"//]*\")*[^\"]*)(\\/\\*.*)");
         Pattern blockCommentStartPattern = Pattern.compile(regex);
         Matcher matcher = blockCommentStartPattern.matcher(line);
         if (matcher.matches()) {
             String comment = matcher.group(3);
             if (comment.equals(matcher.group(0))) {
-                // code ++
+                // TODO: matcher.group(0) is a line of source code
             }
             return comment;
         }
         return null;
     }
 
+    /**
+     * findLineComment
+     * @param line
+     * @param regex
+     * @return
+     */
     public static String findLineComment(String line, String regex) {
-        //Pattern lineCommentPattern = Pattern.compile("(([^\"]*\"[^\"]*\")*[^\"]*)(//.*)");
         Pattern lineCommentPattern = Pattern.compile(regex);
         Matcher matcher = lineCommentPattern.matcher(line);
         if (matcher.matches()) {
             String comment = matcher.group(3);
             if (matcher.group(1) != null) {
-                // code ++
+                // TODO: matcher.group(1) is a line of source code
             }
             return comment;
         }

@@ -69,18 +69,23 @@ public class ParseCommentResult {
     }
 
     public String toString() {
-        String result = "======== All line comments: ========" + System.lineSeparator();
+        String result = "======== All line comments: ========================" + System.lineSeparator();
+        result += System.lineSeparator();
         for (LineComment lineComment: lineComments) {
             result += lineComment.toString();
+            result += System.lineSeparator();
         }
 
-        result += "======== All block comments: ========" + System.lineSeparator();
+        result += "======== All block comments: ========================" + System.lineSeparator();
+        result += System.lineSeparator();
         for (BlockComment blockComment: blockComments) {
             result += blockComment.toString();
+            result += System.lineSeparator();
         }
-
-        result += "======== Total number of lines: " + totalLineNum + " ========" + System.lineSeparator();
-        result += "======== Total number of TODOs: " + totalTODONum + " ========" + System.lineSeparator();
+        result += System.lineSeparator();
+        result += "======== Total number of lines: " + totalLineNum  + System.lineSeparator();
+        result += System.lineSeparator();
+        result += "======== Total number of TODOs: " + totalTODONum  + System.lineSeparator();
 
         return result;
     }

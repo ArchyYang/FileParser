@@ -3,13 +3,14 @@ package main.java.com.github.fileparser.data;
 public class LineComment {
 
     private boolean hasTODO = false;
+    private final String TODO = "TODO";
     private String comment;
     private int lineNumber;
 
 
     public LineComment(String comment, int lineNumber) {
         setComment(comment);
-        if (comment.contains("TODO")) {
+        if (comment.contains(TODO)) {
             hasTODO = true;
         };
         this.lineNumber = lineNumber;

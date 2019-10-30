@@ -12,9 +12,12 @@ public class RegexProvider {
     public static final String REGEX_SINGLE_LINE_COMMENT = "(([^\"]*\"[^\"]*\")*[^\"]*)(//.*)";
 
     static final String PHP = "php";
-    public static final String PHP_REGEX_SINGLE_LINE_COMMENT = "(([^\"]*\"[^\"]*\")*[^\"]*)(//|#.*)";
-    static final String HTML = "html";
+    public static final String PHP_REGEX_SINGLE_LINE_COMMENT = "(([^\"(?://|#)]*\"[^\"(?://|#)]*\")*[^\"(?://|#)]*)((?://|#).*)";
 
+    static final String PYTHON = "py";
+    public static final String PYTHON_REGEX_BLOCK_COMMENT_START = "(([^\"#]*\"[^\"#]*\")*[^\"#]*)(\"\"\".*)";
+    public static final String PYTHON_REGEX_BLOCK_COMMENT_END = "(([^\"#]*\"[^\"#]*\")*[^\"#]*)(\"\"\")(.*)";
+    public static final String PYTHON_REGEX_SINGLE_LINE_COMMENT = "(([^\"]*\"[^\"]*\")*[^\"]*)(#.*)";
 
     public static RegexComment getRegex(String extension) {
         if (extension == null) {
@@ -26,10 +29,15 @@ public class RegexProvider {
                                     REGEX_BLOCK_COMMENT_START,
                                     REGEX_BLOCK_COMMENT_END);
         }
-        else if (extension == PHP) {
+        else if (extension.equals(PHP)) {
             return new RegexComment(PHP_REGEX_SINGLE_LINE_COMMENT,
                                     REGEX_BLOCK_COMMENT_START,
                                     REGEX_BLOCK_COMMENT_END);
+        }
+        else if (extension.equals(PYTHON)) {
+            return new RegexComment(PYTHON_REGEX_SINGLE_LINE_COMMENT,
+                                    PYTHON_REGEX_BLOCK_COMMENT_START,
+                                    PYTHON_REGEX_BLOCK_COMMENT_END);
         }
 
         return null;
