@@ -10,7 +10,7 @@ public class ParserTest {
     RegexComment regexComment = RegexProvider.getRegex("java");
 
     @Test
-    public void endCommentShouldBeFound() {
+    public void javaEndCommentShouldBeFound() {
         String str1 = "some comment*/";
         String str2 = "some comment */ int a = 5;";
         Assertions.assertEquals(str1, Parser.findBlockCommentEnd(str1, regexComment.getBlockCommentEnd()));
@@ -19,7 +19,7 @@ public class ParserTest {
 
 
     @Test
-    public void startCommentShouldBeFound() {
+    public void javaStartCommentShouldBeFound() {
         String str1 = "/* some comments";
         String str2 = "int a = 2; /* some comments";
         String str3 = "int a = 2; /* some comments*/";
@@ -29,10 +29,39 @@ public class ParserTest {
     }
 
     @Test
-    public void lineCommentShouldBeFound() {
+    public void javaLineCommentShouldBeFound() {
         String str1 = "//some comments";
         String str2 = "int a = 2; //some comments";
         Assertions.assertEquals(str1, Parser.findLineComment(str1, regexComment.getSingleLineComment()));
         Assertions.assertEquals(str1, Parser.findLineComment(str2, regexComment.getSingleLineComment()));
+    }
+
+    RegexComment pythonRegexComment = RegexProvider.getRegex("py");
+
+    @Test
+    public void pythonEndCommentShouldBeFound() {
+        String str1 = "some comment\"\"\"";
+        String str2 = "some comment\"\"\"a = 5;";
+        Assertions.assertEquals(str1, Parser.findBlockCommentEnd(str1, pythonRegexComment.getBlockCommentEnd()));
+        Assertions.assertEquals(str1, Parser.findBlockCommentEnd(str2, pythonRegexComment.getBlockCommentEnd()));
+    }
+
+
+    @Test
+    public void pythonStartCommentShouldBeFound() {
+        String str1 = "\"\"\"some comments";
+        String str2 = "int a = 2;\"\"\"some comments";
+        String str3 = "int a = 2;\"\"\"some comments\"\"\"";
+        Assertions.assertEquals(str1, Parser.findBlockCommentStart(str1, pythonRegexComment.getBlockCommentStart()));
+        Assertions.assertEquals(str1, Parser.findBlockCommentStart(str2, pythonRegexComment.getBlockCommentStart()));
+        Assertions.assertEquals(str1+"\"\"\"", Parser.findBlockCommentStart(str3,pythonRegexComment.getBlockCommentStart()));
+    }
+
+    @Test
+    public void pythonLineCommentShouldBeFound() {
+        String str1 = "#some comments";
+        String str2 = "int a = 2; #some comments";
+        Assertions.assertEquals(str1, Parser.findLineComment(str1, pythonRegexComment.getSingleLineComment()));
+        Assertions.assertEquals(str1, Parser.findLineComment(str2, pythonRegexComment.getSingleLineComment()));
     }
 }

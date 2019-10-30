@@ -16,6 +16,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String path = scanner.nextLine();
         String extension = null;
+
         int i = path.lastIndexOf('.');
         if (i == 0) {
             System.out.println("Invalid input file");
@@ -23,8 +24,7 @@ public class Main {
         if (i > 0) {
             extension = path.substring(i+1);
         }
-        System.out.println("Your file path is " + path);
-        System.out.println("Processing...");
+        System.out.println("The file path is " + path);
 
         List<String> file = Provider.provider(new File(path));
         RegexComment regex = RegexProvider.getRegex(extension);
@@ -34,10 +34,6 @@ public class Main {
         }
         ParseCommentResult result = Parser.parse(file, regex);
         System.out.println(result.toString());
-
-
-
-
 
     }
 }

@@ -11,7 +11,12 @@ import java.util.regex.Pattern;
 
 
 public class Parser {
-
+    /**
+     * Given regex and file, parse out data.
+     * @param file
+     * @param regexComment
+     * @return
+     */
     public static ParseCommentResult parse(List<String> file, RegexComment regexComment) {
 
         ParseCommentResult result = new ParseCommentResult();
